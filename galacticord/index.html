@@ -1,0 +1,54 @@
+<title>setting up galacticord.</title>
+in this set of documentation, we will learn how to setup galacticord, keep it up to date, and even run it as a backround service.
+<h1>prerequisites</h1>
+you'll want the following.
+<ul><li>a VPS with at least 4gigs of ram.</li><li>your VPS <strong>must</strong>run Linux.</li><li>have git installed for cloning repositories. for exact instructions, check your Linux package managers documentation, but generally, most come with git already to go.</li><li>your discord bot token and bot owner IDs, check <a href="https://discord.com/developers/applications">discord developer portal</a>to get this information. note: your discord bot token will be under bot, and your client ID will be under oauth2.</li><ul>
+<h1>optional, but recommended.</h1>
+<ul><li>gemini API key, obtainable via <a href="https://aistudio.google.com"google AI studio</a>.</li>a quick note, if you plan to actively use gemini for tts (gemini-2.5-flash-preview-tts) it is recommended you enable billing to get around the 10request per minute ratelimit. for exact pricing, check your teer status details.
+<li>youtube API key, obtainable via <a href="https://console.cloud.google.com">google cloud console</a>, for searching youtube for the play command.</li> very important note: this is <strong>not</strong> for ytdlp in  terms of searching. please use a proxy if you want to play videos using yt-dlp if you are on a VPS. if you're on a home computer, this is generally not required.
+note: you can try to use a cookies.txt file, but this is unlikely to work.
+<li>google cloud TTS API key, also obtainable through the google cloud console, however, requires billing to be enabled for your google cloud project.</li>
+<h1>easy setup instructions</h1>
+this will guide you through initial setup.
+1. before you start, it is recommended that you make a separate folder for the bot, however, this is not recommended. in fact, git creates a folder for you, which means you don't necessarily have to do it yourself. nevertheless, if you still want to, run this command.
+mkdir galacticord
+<ol><li> clone the repository.</li> <ul><li>if you are in your main (~) (home) folder:</li>
+<code>git clone https://github.com/g4p-studios/galacticord</code>
+<li>if you are in a separate folder.</li> this usually only requires a dot at the end of your command.
+git clone https://github.com/g4p-studios/galacticord .
+</ul>
+<li>run the setup script</li>if git created a folder for you, cd into it now  using cd foldername. E.G. cd galacticord, then run the following commands.
+<code>chmod +x setup.sh && ./setup.sh</code>
+<li>once inside the setup script, click 1</li>
+1 means install.
+once you do that, give it about 15-30minutes to get everything installed. while this usually takes around 15-30 minutes, this highly depends on your internet connection and speed of your server or the computer you are using to run the bot. this will install everything required to run the piper voices, along with the Linux (RHVoice and Espeak) voices.
+<li>after installation, it will ask you for your credentials. provide them when it asks</li> note: if you do not have a certain credential, like an APi key, or you don't want to provide one, simply click enter. if you want to change this without running the setup script again, you can always do so in your .env file.
+</ol>when the setup script closes, it is likely you are ready to run the bot.
+<h1>how to run the bot for the first time</h1>
+when the bot is first setup, you have 2 options. running in the terminal while you're on the computer and in the backround.
+<h1>the terminal</h1>  in the same foldr, type npm start. alternatively, you can also type ./setup.sh again, press enter, then press 2. this will allow you to see logs while also testing the bot.
+<h1>running in the backround.</h1>
+not only does the bot let you run it in the backround as a system service, it makes this quite easy.
+very important: before you do this, press control+c if you are running the bot in the terminal.
+<ol><li>type setup.sh then press enter.</li><li>this time, press 3 and then press enter</li><li>when it asks for a name, you can just press enter or type in a custom name for the process, E.G. gal</li></ol>
+assuming system is installed, the bot will attempt to make a system service. this will run the bot even on reboot.
+to start the service, type the following command.
+systemctl start servicename.
+if it's galacticord, than you would type systemctl start galacticord.
+your bot is now running in the backround.
+<h1>updating the bot</h1>
+often, updating the bot is as simple as running git pull . note: sometimes, you may need to run git stash, git pull, then git stash pop, depending on what gets updated, E.G. a script gets updated.
+<h1>very important</h1> depending on the feature and packages installed/updated, there may be times where you need to run git reset --hard.
+do <strong>not</strong> do this without running these commands.
+<ol><li> in the bots folder, run this command immediately!</li>
+cp .env .env.bak
+this backs up your environment variables.
+<li>in the same folder, cd over to the subfolder.</li>
+cd data
+gcp tts_settings.json tts_settings.json.bak && cp server_config.json server_config.json.bak
+this backs up your server settings and any other server settings of servers the bot may be on.
+<li>go back to the bots main folder and do systemctl stop servicename if you are running any system service with the bot.</li><li>git reset --hard && git pull</li>
+<li>run the following commands to restore your settings.</li>
+cp .env.bak .env &&cd data &&cp tts_settings.json.bak tts_settings.json && cp server_config.json.bak server_config.json
+</ol>
+you may now rerun the system service with systemctl start gal.
