@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting up Galacticord on Windows - blindsoft docs</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #1a1a1a;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        pre code {
+            padding: 0;
+            background: none;
+            flex-grow: 1;
+        }
+        .copy-button {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .copy-button:hover {
+            background: #004494;
+        }
+        .copy-button:focus {
+            outline: 3px solid #ffbf47;
+            outline-offset: 2px;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        h1, h2, h3 { border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+        .note { border-left: 4px solid #0056b3; padding-left: 1rem; margin: 1rem 0; font-style: italic; }
+        .warning { border-left: 4px solid #d9534f; padding-left: 1rem; margin: 1rem 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav aria-label="Breadcrumb">
+        <a href="../">Back to Directories</a>
+    </nav>
+    <main>
+        <h1>Setting up Galacticord on Windows</h1>
+        <p>This tutorial will apply to running Galacticord in your local and/or cloud Windows environment. While the setup process is largely the same as Galacticord for Linux, there are differences.</p>
+
+        <h2>What You'll Need</h2>
+        <ul>
+            <li>Node.js and npm installed.</li>
+            <li>The credentials found in the main Galacticord setup (Discord Token, Owner IDs, etc.).</li>
+        </ul>
+
+        <div class="warning">
+            <h3>Very Important: Administrator Required</h3>
+            <p>Regardless of which setup script you decide to run (<code>setup.bat</code> or <code>setup.ps1</code>), you <strong>must</strong> have Administrator permissions on your Windows environment.</p>
+        </div>
+
+        <h2>Other Important Notes</h2>
+        <p>While largely the same as the Linux version, the main difference is that <strong>Piper will not be available</strong> for the Windows build. This is due to distortion problems when streaming Piper into the voice channel on Windows.</p>
+
+        <h2>Setting Up</h2>
+        <ol>
+            <li>
+                <strong>Open Terminal as Administrator:</strong>
+                <p>Press <code>Windows + R</code>, type <code>cmd.exe</code> (or <code>powershell.exe</code>), and run it as <strong>Administrator</strong>.</p>
+            </li>
+            <li>
+                <strong>Run Setup Commands:</strong>
+                <p>The following command will create a folder, clone the Windows branch, and run the script all at once:</p>
+                <pre><code>mkdir galacticord-win64 && cd galacticord-win64 && git clone https://github.com/g4p-studios/galacticord . -b windows && setup.bat</code><button class="copy-button" aria-label="Copy windows setup command">Copy</button></pre>
+            </li>
+            <li>
+                <strong>Wait for Installation:</strong>
+                <p>Give it 5–10 minutes to install. If prompted for Administrator permissions during the script, select <strong>Yes</strong>; it will not work otherwise.</p>
+            </li>
+            <li>
+                <strong>Install:</strong>
+                <p>Select option <strong>1</strong> (Install). This should be quick since Piper is not available.</p>
+            </li>
+            <li>
+                <strong>Credentials:</strong>
+                <p>Follow the prompts for Discord API keys and other keys. Press Enter to skip any you don't have; you can edit the <code>.env</code> file later.</p>
+            </li>
+        </ol>
+
+        <h2>Running the Bot</h2>
+        <p>You have two options for running the bot, similar to the Linux script.</p>
+
+        <h3>Option 1: Running in the Terminal</h3>
+        <p>In the setup script, press <strong>2</strong> to run the bot and see logs in real-time.</p>
+
+        <h3>Option 2: Running in the Background</h3>
+        <p>Stop any running terminal process first.</p>
+        <ol>
+            <li>Run the setup command:
+                <pre><code>setup.bat</code><button class="copy-button" aria-label="Copy setup.bat command">Copy</button></pre>
+            </li>
+            <li>Grant Administrator permissions when prompted.</li>
+            <li>Select option <strong>3</strong> to create a Windows service.</li>
+            <li>Give it a name (e.g., <code>gal</code>) and press Enter.</li>
+            <li>
+                <strong>Verify:</strong> Press Start, type <strong>Services</strong>, and look for your service name. 
+                <p>If it's there, congratulations! You have a bot running in the background. Go brag about it to your parents—I'm sure they'll be impressed!</p>
+            </li>
+        </ol>
+    </main>
+
+    <div id="status-message" class="sr-only" aria-live="polite"></div>
+
+    <script>
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const code = button.previousElementSibling.innerText;
+                const status = document.getElementById('status-message');
+                
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = button.innerText;
+                    button.innerText = 'Copied!';
+                    status.textContent = 'Command copied to clipboard';
+                    
+                    setTimeout(() => {
+                        button.innerText = originalText;
+                        status.textContent = '';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
